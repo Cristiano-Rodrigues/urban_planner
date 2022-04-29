@@ -10,3 +10,12 @@ a calendar manager for monthly tasks
 - [ ] Allow to add activity details by clicking in it
 - [ ] Allow to have some activities as templates (activities that occur frequenly in that week day)
 - [ ] Use the color system to manage activity importance
+
+## Steps
+
+- [x] App requirements
+- [ ] Design layout
+- [ ] Build layout
+- [ ] Choose the correct data stucture
+- [ ] Rendering system
+- [ ] Business rule
