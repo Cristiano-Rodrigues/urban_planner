@@ -12,7 +12,6 @@
 
 /* Calendar table */
 #calendarContainer {
-  position: relative;
   height: 620px;
   overflow-y: auto;
 }
@@ -24,4 +23,24 @@
 }
 .calendarHeader:nth-child(1) {
   text-align: left;
+}
+
+#calendar td{
+  position: relative;
+  width: calc(100% / 8);
+  height: 45px;
+}
+.activity {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(100% - 5px);
+  padding: 5px;
+  border-radius: 5px;
+  background-color: rgb(123, 158, 255);
+  transition: .3s;
+  cursor: pointer;
+}
+.activity:hover {
+  box-shadow: 0 0 20px rgb(0, 0, 0, .3);
 }
