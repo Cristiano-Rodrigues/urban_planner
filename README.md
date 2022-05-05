@@ -15,7 +15,7 @@ a calendar manager for monthly tasks
 
 - [x] App requirements
 - [x] Design layout
-- [ ] Build layout
+- [x] Build layout
 - [ ] Choose the correct data stucture
 - [ ] Rendering system
 - [ ] Business rule
