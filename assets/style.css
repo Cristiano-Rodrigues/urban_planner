@@ -19,6 +19,7 @@
   text-align: center;
 }
 .calendarHeader.current {
+  color: #0D6EFD;
   border-bottom: 3px solid #0D6EFD !important;
 }
 .calendarHeader:nth-child(1) {
