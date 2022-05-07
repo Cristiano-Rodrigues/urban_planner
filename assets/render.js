@@ -22,9 +22,9 @@ function drawTable(viewLayout) {
     }
 
     const hoursInADay = 24, daysInAWeek = 7
-    for (let hour = 1; hour <= hoursInADay; hour++) {
+    for (let hour = 0; hour < hoursInADay; hour++) {
       const bodyRow = body.appendChild(elt('tr'))
-      bodyRow.appendChild(elt('td', null, String(hour)))
+      bodyRow.appendChild(elt('td', null, hour + 'h'))
       for (let day = 0; day < daysInAWeek; day++) {
         bodyRow.appendChild(elt('td'))
       }
@@ -45,9 +45,9 @@ function drawTable(viewLayout) {
     }
 
     const hoursInADay = 24
-    for (let hour = 1; hour <= hoursInADay; hour++) {
+    for (let hour = 0; hour < hoursInADay; hour++) {
       const bodyRow = body.appendChild(elt('tr'))
-      bodyRow.appendChild(elt('td', null, String(hour)))
+      bodyRow.appendChild(elt('td', null, hour + 'h'))
       bodyRow.appendChild(elt('td'))
     }
 
@@ -74,7 +74,7 @@ function drawTable(viewLayout) {
     }
 
     const weeksInAMonth = 6, daysInAWeek = 7
-    for (let hour = 1; hour <= weeksInAMonth; hour++) {
+    for (let week = 1; week <= weeksInAMonth; week++) {
       const bodyRow = body.appendChild(elt('tr'))
       for (let day = 0; day < daysInAWeek; day++) {
         bodyRow.appendChild(elt('td'))
@@ -84,24 +84,53 @@ function drawTable(viewLayout) {
     return table
   }
 
-  function elt(node, attributes, ...children) {
-    const el = document.createElement(node)
-    for (const attr in attributes) {
-      el.setAttribute(attr, attributes[attr])
-    }
-    children.forEach(child => {
-      if (typeof child === "string") {
-        return el.appendChild(document.createTextNode(child))
-      }
-      el.appendChild(child)
-    })
-    return el
-  }
-
   return drawTypes[viewLayout]()
+}
+
+function drawActivity(activity) {
+  const activityEl = elt('div', { class: 'activity' } ,
+    elt('div', { class: 'name'}, elt('p', { class: 'h6 text-white' }, activity.name)) ,
+    elt('div', { class: 'status'}, elt('input', {
+      type: 'checkbox',
+      name: 'status',
+      id: 'status',
+      checked: activity.checked
+    })))
+
+  activity.el = activityEl
+  return activityEl
+}
+
+function elt(node, attributes, ...children) {
+  const el = document.createElement(node)
+  for (const attr in attributes) {
+    el.setAttribute(attr, attributes[attr])
+  }
+  children.forEach(child => {
+    if (typeof child === "string") {
+      return el.appendChild(document.createTextNode(child))
+    }
+    el.appendChild(child)
+  })
+  return el
 }
 
 const container = document.getElementById('calendarContainer')
 container.appendChild(
-  drawTable('month')
+  drawTable('week')
 )
+
+const el = drawActivity({
+	id: "YhDhaO3e2",
+  name: "Name of the activity",
+	type: "task",
+	start: { h: 12, m: 30 },
+	durationInMinutes: 60,
+  days: ["Sunday" , "Friday"],
+  colorRGB: "#00ff00",
+	description: "task description",
+  el: null,
+  repeatAlways: true,
+	checked: false
+})
+document.body.appendChild(el)
