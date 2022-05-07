@@ -17,5 +17,5 @@ a calendar manager for monthly tasks
 - [x] Design layout
 - [x] Build layout
 - [ ] Choose the correct data stucture
-- [ ] Rendering system
+- [x] Rendering system
 - [ ] Business rule

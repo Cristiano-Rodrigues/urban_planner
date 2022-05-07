@@ -15,22 +15,46 @@
   height: calc(100vh - 120px);
   overflow-y: auto;
 }
-.calendarHeader {
+/* Month Layout */
+.month {
   text-align: center;
 }
-.calendarHeader.current {
+.month th.current,
+.week th.current,
+.day th.current {
   color: #0D6EFD;
-  border-bottom: 3px solid #0D6EFD !important;
+  border-bottom: 3px solid #0D6EFD;
 }
-.calendarHeader:nth-child(1) {
-  text-align: left;
+.month td {
+  width: calc(100% / 7);
+  height: 180px;
 }
-
-#calendar td{
-  position: relative;
-  width: calc(100% / 8);
-  height: 45px;
+/* ---- */
+/* Week layout */
+.week {
+  text-align: center;
 }
+.week td {
+  width: calc(100% / 7);
+}
+.week th:nth-child(1),
+.week td:nth-child(1) {
+  width: 60px;
+}
+/* ---- */
+/* Day layout */
+.day {
+  text-align: center;
+}
+.day td {
+  width: 100%;
+}
+.day th:nth-child(1),
+.day td:nth-child(1) {
+  width: 60px;
+}
+/* ---- */
+/* Activity bubble */
 .activity {
   position: absolute;
   top: 2px;
@@ -45,3 +69,5 @@
 .activity:hover {
   box-shadow: 0 0 20px rgb(0, 0, 0, .3);
 }
+/* ---- */
+/* ---- */
