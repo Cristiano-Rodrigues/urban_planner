@@ -1,24 +1,38 @@
-function createActivityManager() {
-  const activities = {}
+function createActivityManager(dispatcher) {
+  const status = { activities: {} }
+  const storagePlacement = 'urban_status'
+
+  dispatcher.addListener('start', () => {
+    status.activities = JSON.parse(localStorage.getItem(storagePlacement))
+  })
+
+  dispatcher.addListener('new activity', activity => {
+    add(activity)
+    store()
+  })
+
+  function getAll() {
+    return status.activities
+  }
 
   function add(activity) {
     const randomId = getRandomId()
-    activities[randomId] = activity
+    status.activities[randomId] = activity
     activity.id = randomId
     activity.date = Date.now()
     return activity
   }
 
   function remove(id) {
-    return delete activities[id]
+    return delete status.activities[id]
   }
 
   function find(id) {
-    return activities[id]
+    return status.activities[id]
   }
 
   function store() {
-    localStorage.setItem('urban_status', JSON.stringify(activities))
+    localStorage.setItem(storagePlacement, JSON.stringify(status.activities))
   }
 
   function getRandomId() {
@@ -27,6 +41,7 @@ function createActivityManager() {
   }
 
   return {
+    getAll,
     add,
     remove,
     find,

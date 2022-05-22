@@ -115,7 +115,29 @@
       </div>
     </div>
   </div>
+  <script src="assets/dispatcher.js"></script>
   <script src="assets/render.js"></script>
+  <script src="assets/activityManager.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script>
+    const dispatcher = createDispatcher()
+    const activityManager = createActivityManager(dispatcher)
+    
+    activityManager.add({
+      name: "No name",
+      type: "task",
+      durationInMinutes: 60,
+      days: ["Sunday" , "Friday"],
+      colorRGB: "#00ff00",
+      description: "no description",
+      el: null,
+      repeatAlways: true,
+      checked: false
+    })
+
+    const display = createDisplay(dispatcher)
+
+    dispatcher.dispatch('start', activityManager.getAll())
+  </script>
 </body>
 </html>

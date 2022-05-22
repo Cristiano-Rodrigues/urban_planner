@@ -1,10 +1,22 @@
-function createDisplay() {
+function createDisplay(dispatcher) {
+  const defaultViewLayout = 'week'
   const container = document.getElementById('calendarContainer')
   const drawTypes = Object.create({
     week: renderWeek,
     month: renderMonth,
     day: renderDay
   })
+
+  dispatcher.addListener('start', activities => {
+    display.drawCalendar(defaultViewLayout)
+    
+    for (const activityId in activities) {
+      const activity = activities[activityId]
+      display.drawActivity(activity)
+    }
+  })
+
+  dispatcher.addListener('new activity', drawActivity)
 
   function renderWeek() {
     const header = elt('thead'), body = elt('tbody')
@@ -108,7 +120,7 @@ function createDisplay() {
       })))
   
     activity.el = activityEl
-    return activityEl
+    container.appendChild(activityEl)
   }
 
   function elt(node, attributes, ...children) {
@@ -130,18 +142,3 @@ function createDisplay() {
     drawActivity
   }
 }
-
-// const el = drawActivity({
-// 	id: "YhDhaO3e2",
-//   name: "Name of the activity",
-// 	type: "task",
-// 	date: Date.now(),
-// 	durationInMinutes: 60,
-//   days: ["Sunday" , "Friday"],
-//   colorRGB: "#00ff00",
-// 	description: "task description",
-//   el: null,
-//   repeatAlways: true,
-// 	checked: false
-// })
-// document.body.appendChild(el)
