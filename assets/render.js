@@ -124,7 +124,7 @@ const el = drawActivity({
 	id: "YhDhaO3e2",
   name: "Name of the activity",
 	type: "task",
-	start: { h: 12, m: 30 },
+	date: Date.now(),
 	durationInMinutes: 60,
   days: ["Sunday" , "Friday"],
   colorRGB: "#00ff00",
