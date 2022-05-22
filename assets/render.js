@@ -1,7 +1,12 @@
-function drawTable(viewLayout) {
-  const drawTypes = Object.create(null)
+function createDisplay() {
+  const container = document.getElementById('calendarContainer')
+  const drawTypes = Object.create({
+    week: renderWeek,
+    month: renderMonth,
+    day: renderDay
+  })
 
-  drawTypes.week = () => {
+  function renderWeek() {
     const header = elt('thead'), body = elt('tbody')
     const table = elt('table', {
       class: 'table table-bordered week', id: 'container' }, header, body)
@@ -33,7 +38,7 @@ function drawTable(viewLayout) {
     return table
   }
 
-  drawTypes.day = () => {
+  function renderDay() {
     const header = elt('thead'), body = elt('tbody')
     const table = elt('table', {
       class: 'table table-bordered day', id: 'container' }, header, body)
@@ -54,7 +59,7 @@ function drawTable(viewLayout) {
     return table
   }
 
-  drawTypes.month = () => {
+  function renderMonth() {
     const header = elt('thead'), body = elt('tbody')
     const table = elt('table', {
       class: 'table table-bordered month', id: 'container' }, header, body)
@@ -83,54 +88,60 @@ function drawTable(viewLayout) {
 
     return table
   }
+  
+  function drawCalendar(viewLayout) {
+    const renderCalendar = drawTypes[viewLayout]
+    const calendar = renderCalendar()
 
-  return drawTypes[viewLayout]()
-}
-
-function drawActivity(activity) {
-  const activityEl = elt('div', { class: 'activity' } ,
-    elt('div', { class: 'name'}, elt('p', { class: 'h6 text-white' }, activity.name)) ,
-    elt('div', { class: 'status'}, elt('input', {
-      type: 'checkbox',
-      name: 'status',
-      id: 'status',
-      checked: activity.checked
-    })))
-
-  activity.el = activityEl
-  return activityEl
-}
-
-function elt(node, attributes, ...children) {
-  const el = document.createElement(node)
-  for (const attr in attributes) {
-    el.setAttribute(attr, attributes[attr])
+    container.appendChild(calendar)
   }
-  children.forEach(child => {
-    if (typeof child === "string") {
-      return el.appendChild(document.createTextNode(child))
+
+
+  function drawActivity(activity) {
+    const activityEl = elt('div', { class: 'activity' } ,
+      elt('div', { class: 'name'}, elt('p', { class: 'h6 text-white' }, activity.name)) ,
+      elt('div', { class: 'status'}, elt('input', {
+        type: 'checkbox',
+        name: 'status',
+        id: 'status',
+        checked: activity.checked
+      })))
+  
+    activity.el = activityEl
+    return activityEl
+  }
+
+  function elt(node, attributes, ...children) {
+    const el = document.createElement(node)
+    for (const attr in attributes) {
+      el.setAttribute(attr, attributes[attr])
     }
-    el.appendChild(child)
-  })
-  return el
+    children.forEach(child => {
+      if (typeof child === "string") {
+        return el.appendChild(document.createTextNode(child))
+      }
+      el.appendChild(child)
+    })
+    return el
+  }
+
+  return {
+    drawCalendar,
+    drawActivity
+  }
 }
 
-const container = document.getElementById('calendarContainer')
-container.appendChild(
-  drawTable('week')
-)
-
-const el = drawActivity({
-	id: "YhDhaO3e2",
-  name: "Name of the activity",
-	type: "task",
-	date: Date.now(),
-	durationInMinutes: 60,
-  days: ["Sunday" , "Friday"],
-  colorRGB: "#00ff00",
-	description: "task description",
-  el: null,
-  repeatAlways: true,
-	checked: false
-})
-document.body.appendChild(el)
+// const el = drawActivity({
+// 	id: "YhDhaO3e2",
+//   name: "Name of the activity",
+// 	type: "task",
+// 	date: Date.now(),
+// 	durationInMinutes: 60,
+//   days: ["Sunday" , "Friday"],
+//   colorRGB: "#00ff00",
+// 	description: "task description",
+//   el: null,
+//   repeatAlways: true,
+// 	checked: false
+// })
+// document.body.appendChild(el)
