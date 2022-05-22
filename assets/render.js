@@ -110,7 +110,10 @@ function createDisplay(dispatcher) {
 
 
   function drawActivity(activity) {
-    const activityEl = elt('div', { class: 'activity' } ,
+    const pos = getRelativePos(activity.date)
+    const parentEl = getParentEl(activity)
+
+    const activityEl = elt('div', { class: 'activity', style: `left: ${pos.x}; top: ${pos.y}%;` } ,
       elt('div', { class: 'name'}, elt('p', { class: 'h6 text-white' }, activity.name)) ,
       elt('div', { class: 'status'}, elt('input', {
         type: 'checkbox',
@@ -120,7 +123,23 @@ function createDisplay(dispatcher) {
       })))
   
     activity.el = activityEl
-    container.appendChild(activityEl)
+    parentEl.appendChild(activityEl)
+  }
+
+  function getRelativePos(timestamp) {
+    const date = new Date(timestamp)
+    return {
+      x: 0,
+      y: (date.getMinutes() / 60 * 100)
+    }
+  }
+
+  function getParentEl(activity) {
+    const date = new Date(activity.date)
+    const allCells = container.querySelectorAll('td')
+    const parentEl = allCells[(date.getDay() + 1) + (8 * date.getHours())]
+
+    return parentEl
   }
 
   function elt(node, attributes, ...children) {

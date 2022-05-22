@@ -19,7 +19,6 @@ function createActivityManager(dispatcher) {
     const randomId = getRandomId()
     status.activities[randomId] = activity
     activity.id = randomId
-    activity.date = Date.now()
     return activity
   }
 
