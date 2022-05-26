@@ -15,23 +15,6 @@
   height: calc(100vh - 120px);
   overflow-y: auto;
 }
-/* Month Layout */
-.month {
-  text-align: center;
-}
-.month th.current,
-.week th.current,
-.day th.current {
-  color: #0D6EFD;
-  border-bottom: 3px solid #0D6EFD;
-}
-.month td {
-  position: relative;
-  width: calc(100% / 7);
-  height: 180px;
-}
-/* ---- */
-/* Week layout */
 .week {
   text-align: center;
 }
@@ -44,31 +27,23 @@
   width: 60px;
 }
 /* ---- */
-/* Day layout */
-.day {
-  text-align: center;
-}
-.day td {
-  position: relative;
-  width: 100%;
-}
-.day th:nth-child(1),
-.day td:nth-child(1) {
-  width: 60px;
-}
-/* ---- */
-/* Activity bubble */
-.activity {
+/* task bubble */
+.task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: absolute;
   left: 2px;
   width: calc(100% - 5px);
-  padding: 5px;
-  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 9pt;
+  border-radius: 3px;
   background-color: rgb(123, 158, 255);
   transition: .3s;
   cursor: pointer;
+  z-index: 1000;
 }
-.activity:hover {
+.task:hover {
   box-shadow: 0 0 20px rgb(0, 0, 0, .3);
 }
 /* ---- */
