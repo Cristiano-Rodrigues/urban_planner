@@ -4,7 +4,7 @@ function render() {}
 
 render.drawTable = function () {
   const header = elt('thead'), body = elt('tbody')
-  const table = el('table', {
+  const table = elt('table', {
     class: 'table table-bordered week', id: 'container' }, header, body)
   
   const columns = ['Hour', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -28,9 +28,9 @@ render.drawTable = function () {
   container.appendChild(table)
 }
 
-render.drawTask = function (task) {
+render.drawTask = function (task, parent) {
   const { x, y, height } = getBounding(task)
-  const parent = target || getParentEl(task)
+  parent = parent ?? getParentEl(task)
 
   const status = elt('input', {
     type: 'checkbox', name: 'status', id: 'status'
@@ -38,7 +38,7 @@ render.drawTask = function (task) {
   status.checked = task.checked
   const element = elt('div', {
     class: 'task',
-    style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.colorRGB}`,
+    style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
     'data-bs-toggle': 'modal',
     'data-bs-target': '#taskSettings'
   },
