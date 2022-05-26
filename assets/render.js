@@ -2,7 +2,7 @@ const container = document.getElementById('calendarContainer')
 
 function render() {}
 
-render.prototype.drawTable = function () {
+render.drawTable = function () {
   const header = elt('thead'), body = elt('tbody')
   const table = el('table', {
     class: 'table table-bordered week', id: 'container' }, header, body)
@@ -28,7 +28,7 @@ render.prototype.drawTable = function () {
   container.appendChild(table)
 }
 
-render.prototype.drawTask = function (task) {
+render.drawTask = function (task) {
   const { x, y, height } = getBounding(task)
   const parent = target || getParentEl(task)
 
