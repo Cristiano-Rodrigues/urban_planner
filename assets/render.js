@@ -13,14 +13,13 @@ render.drawTable = function () {
     headerRow.appendChild(elt('th', null, column))
 
   const hoursInADay = 24, daysInAWeek = 7
-  for (let hour = 0; hour < hoursInADay; hour++) {
+  for (let hours = 0; hours < hoursInADay; hours++) {
     const bodyRow = body.appendChild(elt('tr'))
-    bodyRow.appendChild(elt('td', null, hour + 'h'))
-    for (let day = 1; day <= daysInAWeek; day++) {
+    bodyRow.appendChild(elt('td', null, hours + 'h'))
+    for (let weekday = 1; weekday <= daysInAWeek; weekday++) {
       bodyRow.appendChild(elt('td', {
         class: 'time-share',
-        'data-week-day': day,
-        'data-hour': hour
+        'data-cell-time': JSON.stringify({ weekday, hours }),
       }))
     }
   }
@@ -28,9 +27,9 @@ render.drawTable = function () {
   container.appendChild(table)
 }
 
-render.drawTask = function (task, parent) {
+render.drawTask = function (task) {
   const { x, y, height } = getBounding(task)
-  parent = parent ?? getParentEl(task)
+  const parent = /* task.parent ?? */ getParentEl(task)
 
   const status = elt('input', {
     type: 'checkbox', name: 'status', id: 'status'
@@ -52,7 +51,7 @@ render.drawTask = function (task, parent) {
 }
 
 function getBounding(task) {
-  const cellHeight = 40, minutesPerHour = 60 // temp
+  const cellHeight = 41, minutesPerHour = 60 // temp
   const ratio = cellHeight / minutesPerHour
   return {
     x: 0,

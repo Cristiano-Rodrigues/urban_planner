@@ -21,6 +21,7 @@
 .week td {
   position: relative;
   width: calc(100% / 7);
+  cursor: pointer
 }
 .week th:nth-child(1),
 .week td:nth-child(1) {

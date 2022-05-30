@@ -6,7 +6,7 @@ a calendar manager for monthly tasks
 
 - [x] Show a calendar  
 - [x] Allow to choose between a montly or a weekly calendar
-- [ ] Allow activity management by click and drag
+- [x] Allow activity management by click and drag
 - [ ] Allow to add activity details by clicking in it
 - [ ] Allow to have some activities as templates (activities that occur frequenly in that week day)
 - [ ] Use the color system to manage activity importance
@@ -16,6 +16,6 @@ a calendar manager for monthly tasks
 - [x] App requirements
 - [x] Design layout
 - [x] Build layout
-- [ ] Choose the correct data stucture
+- [x] Choose the correct data stucture
 - [x] Rendering system
 - [ ] Business rule

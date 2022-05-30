@@ -9,10 +9,7 @@ storage.each = function (fn) {
   }
 }
 storage.add = function (task) {
-  const id = getRandomId()
-  this._tasks[id] = task
-  task.id = id
-  task.date = task.date.getTime()
+  this._tasks[task.id] = task
   store()
 }
 storage.remove = function (id) {
@@ -34,11 +31,6 @@ storage.filter = function (filterFn) {
   return passed
 }
 
-function getRandomId() {
-  const randomId = (Date.now() * Math.random()).toString(32)
-  return randomId
-}
-
 function store() {
   localStorage.setItem(storage._place, JSON.stringify(storage._tasks))
 }
@@ -48,8 +40,8 @@ function restore() {
   const normalizedTasks = {}
   for (const id in rawTasks) {
     const rawTask = rawTasks[id]
-    rawTask.date = new Date(rawTask.date)
-    normalizedTasks[id] = rawTask
+    const task = new Task(rawTask)
+    normalizedTasks[id] = task
   }
   return normalizedTasks
 }
