@@ -21,17 +21,17 @@ function handleMouseDown(downEvt, render, storage) {
   downEvt.preventDefault()
 
   function handleMouseUp(upEvt) {
+    document.removeEventListener('mouseup', handleMouseUp)
+
     const dragHeight = upEvt.clientY - downEvt.clientY
     
-    if (dragHeight <= 0) return
+    if (dragHeight <= 10) return
     
     const task = new Task(downEvt, upEvt)
+    const targetCell = downEvt.target
     
-    render.drawTask(task)
-      .addEventListener('mousedown', task.handleMouseDown)
+    render.drawTask(task, targetCell)
     storage.add(task)
-    
-    document.removeEventListener('mouseup', handleMouseUp)
   }
   
   document.addEventListener('mouseup', handleMouseUp)

@@ -27,9 +27,9 @@ render.drawTable = function () {
   container.appendChild(table)
 }
 
-render.drawTask = function (task) {
-  const { x, y, height } = getBounding(task)
-  const parent = /* task.parent ?? */ getParentEl(task)
+render.drawTask = function (task, targetCell) {
+  const parent = targetCell ?? getParentEl(task)
+  const { x, y, height } = getBounding(task, parent)
 
   const status = elt('input', {
     type: 'checkbox', name: 'status', id: 'status'
@@ -38,21 +38,21 @@ render.drawTask = function (task) {
   const element = elt('div', {
     class: 'task',
     style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
+    onmousedown: `(e => e.stopPropagation())(event)`,
     'data-bs-toggle': 'modal',
-    'data-bs-target': '#taskSettings'
+    'data-bs-target': '#task-settings'
   },
     elt('div', { class: 'name' }, elt('p', { class: 'h6 text-white' }, task.name)),
     elt('div', { class: 'status' }, status))
   
-  task.el = element
   parent.appendChild(element)
   
   return element
 }
 
-function getBounding(task) {
-  const cellHeight = 41, minutesPerHour = 60 // temp
-  const ratio = cellHeight / minutesPerHour
+function getBounding(task, parent) {
+  const cellHeight = parent.getBoundingClientRect().height
+  const minutesPerHour = 60, ratio = cellHeight / minutesPerHour
   return {
     x: 0,
     y: task.date.getMinutes() / 60 * 100,
