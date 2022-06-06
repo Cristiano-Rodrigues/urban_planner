@@ -36,9 +36,11 @@ render.drawTask = function (task, targetCell) {
   })
   status.checked = task.checked
   const element = elt('div', {
-    class: 'task',
+    class: 'task', id: task.id, draggable: true,
     style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
-    onmousedown: `(e => e.stopPropagation())(event)`,
+    onmousedown: `(${task.onMouseDown})(event)`,
+    onclick: `(${task.onClick})('${task.id}')`,
+    ondragstart: `(${task.onDragStart})(event, '${task.id}')`,
     'data-bs-toggle': 'modal',
     'data-bs-target': '#task-settings'
   },

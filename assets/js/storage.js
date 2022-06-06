@@ -13,7 +13,8 @@ storage.add = function (task) {
   store()
 }
 storage.remove = function (id) {
-  const task = delete this._tasks[id]
+  const task = this._tasks[id]
+  delete this._tasks[id]
   store()
   return task
 }
@@ -40,7 +41,7 @@ function restore() {
   const normalizedTasks = {}
   for (const id in rawTasks) {
     const rawTask = rawTasks[id]
-    const task = new Task(rawTask)
+    const task = Task(rawTask)
     normalizedTasks[id] = task
   }
   return normalizedTasks

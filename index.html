@@ -53,13 +53,14 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <form action="/" method="POST" id="form">
+          <input type="hidden" name="id">
           <div class="modal-body">
             <div class="mb-3">
               <input type="text" class="form-control" name="name" placeholder="Add a name to the task" required autocomplete="off">
             </div>
             <div class="mb-3">
               <label for="dateAndTime" class="form-label">Data e hora</label>
-              <input type="datetime-local" class="form-control" name="date" id="dateAndTime" required>
+              <input type="datetime-local" class="form-control" name="date" id="date" required>
             </div>
             <div class="mb-3">
               <label for="duration" class="form-label">Duration</label>
@@ -67,8 +68,8 @@
             </div>
             <div class="mb-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="markAsTemplate" name="repeatAlways">
-                <label class="form-check-label" for="markAsTemplate">Mark as template</label>
+                <input class="form-check-input" type="checkbox" id="repeatAlways" name="repeatAlways">
+                <label class="form-check-label" for="repeatAlways">Mark as template</label>
               </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
