@@ -13,7 +13,7 @@ a calendar manager for monthly tasks
 
 ## Steps
 
-- [x] App requirements
+- [x] App~ requirements
 - [x] Design layout
 - [x] Build layout
 - [x] Choose the correct data stucture

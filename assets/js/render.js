@@ -1,63 +1,64 @@
-const container = document.getElementById('calendarContainer')
-
-function render() {}
-
-render.drawTable = function () {
-  const header = elt('thead'), body = elt('tbody')
-  const table = elt('table', {
-    class: 'table table-bordered week', id: 'container' }, header, body)
-  
-  const columns = ['Hour', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  const headerRow = header.appendChild(elt('tr'))
-  for (const column of columns)
-    headerRow.appendChild(elt('th', null, column))
-
-  const hoursInADay = 24, daysInAWeek = 7
-  for (let hours = 0; hours < hoursInADay; hours++) {
-    const bodyRow = body.appendChild(elt('tr'))
-    bodyRow.appendChild(elt('td', null, hours + 'h'))
-    for (let weekday = 1; weekday <= daysInAWeek; weekday++) {
-      bodyRow.appendChild(elt('td', {
-        class: 'time-share',
-        'data-cell-time': JSON.stringify({ weekday, hours }),
-      }))
-    }
+export default class WeekRender {
+  constructor() {
+    this.container = document.getElementById('calendarContainer')
   }
 
-  container.appendChild(table)
-}
+  drawCalendar(calendar) {
+    const header = elt('thead'), body = elt('tbody')
+    const table = elt('table', {
+      class: 'table table-bordered week', id: 'container' }, header, body)
 
-render.drawTask = function (task, targetCell) {
-  const parent = targetCell ?? getParentEl(task)
-  const { x, y, height } = getBounding(task, parent)
+    const headerRow = header.appendChild(elt('tr'))
+    headerRow.appendChild(elt('th', null, 'Hour'))
+    for (let i = 0; i < calendar.WEEKDAYS.length; i++) {
+      const column = `${calendar.WEEKDAYS[ i ]} ${calendar.week.start + i}`
+      headerRow.appendChild(elt('th', null, column))
+    }
 
-  const status = elt('input', {
-    type: 'checkbox', name: 'status', id: 'status'
-  })
-  status.checked = task.checked
-  const element = elt('div', {
-    class: 'task', id: task.id, draggable: true,
-    style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
-    onmousedown: `(${task.onMouseDown})(event)`,
-    onclick: `(${task.onClick})('${task.id}')`,
-    ondragstart: `(${task.onDragStart})(event, '${task.id}')`,
-    'data-bs-toggle': 'modal',
-    'data-bs-target': '#task-settings'
-  },
-    elt('div', { class: 'name' }, elt('p', { class: 'h6 text-white' }, task.name)),
-    elt('div', { class: 'status' }, status))
-  
-  parent.appendChild(element)
-  
-  return element
+    const hoursInADay = 24
+    for (let hours = 0; hours < hoursInADay; hours++) {
+      const bodyRow = body.appendChild(elt('tr'))
+      bodyRow.appendChild(elt('td', null, hours + 'h'))
+      for (let day = calendar.week.start; day <= calendar.week.end; day++) {
+        bodyRow.appendChild(elt('td', {
+          class: 'time-share',
+          'data-date-string': `${calendar.year}-${calendar.month}-${day} ${hours}:00`
+        }))
+      }
+    }
+
+    this.container.appendChild(table)
+  }
+
+  drawTask(task, targetCell) {
+    const parent = targetCell ?? getParentEl(task)
+    const { x, y, height } = getBounding(task, parent)
+
+    const status = elt('input', { type: 'checkbox' })
+    status.checked = task.checked
+
+    const taskEl = elt('div', {
+      class: 'task', id: task.id, draggable: true,
+      style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
+      'data-bs-toggle': 'modal', 'data-bs-target': '#task-settings'
+    },
+      elt('div', { class: 'name' }, elt('p', { class: 'h6 text-white' }, task.name)),
+      elt('div', { class: 'status' }, status))
+
+    parent.appendChild(taskEl)
+
+    taskEl.addEventListener('click', task.onClick)
+    taskEl.addEventListener('mousedown', task.stopPropagation)
+    taskEl.addEventListener('dragstart', task.onDragStart)
+    taskEl.addEventListener('drop', task.stopPropagation)
+  }
 }
 
 function getBounding(task, parent) {
   const cellHeight = parent.getBoundingClientRect().height
   const minutesPerHour = 60, ratio = cellHeight / minutesPerHour
   return {
-    x: 0,
-    y: task.date.getMinutes() / 60 * 100,
+    x: 0, y: task.date.getMinutes() / 60 * 100,
     height: Math.max(task.durationInMinutes * ratio, 20)
   }
 }

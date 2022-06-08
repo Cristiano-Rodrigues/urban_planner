@@ -1,22 +1,28 @@
-function start(render, storage) {
-  render.drawTable()
+import Render from './render.js'
+import Calendar from './calendar.js'
+import Task from './task.js'
 
-  storage.each(render.drawTask)
-  addListeners(render, storage)
+function start(Render, Calendar, Task) {
+  const render = new Render()
+  const calendar = new Calendar()
+  
+  render.drawCalendar(calendar)
+  calendar.getWeeklyTasks().each(render.drawTask)
+  addListeners(render, calendar, Task)
 }
 
-start(render, storage)
+start(Render, Calendar, Task)
 
-function addListeners(render, storage) {
+function addListeners(render, calendar, Task) {
   const cells = document.querySelectorAll('td.time-share')
   const form = document.getElementById('form')
 
-  handleMouseDown(cells, render, storage)
-  handleFormSubmit(form, render, storage)
-  handleDragAndDrop(cells, render, storage)
+  handleMouseDown(cells, render, calendar, Task)
+  handleFormSubmit(form, render, calendar, Task)
+  handleDragAndDrop(cells, render, calendar, Task)
 }
 
-function handleMouseDown(cells, render, storage) {
+function handleMouseDown(cells, render, calendar, Task) {
   const onMouseDown = downEvt => {
     downEvt.preventDefault()
 
@@ -27,11 +33,11 @@ function handleMouseDown(cells, render, storage) {
         
       if (dragHeight <= 10) return
         
-      const task = Task(downEvt, upEvt)
+      const task = new Task(downEvt, upEvt)
       const targetCell = downEvt.target
         
       render.drawTask(task, targetCell)
-      storage.add(task)
+      calendar.add(task)
     }
       
     document.addEventListener('mouseup', onMouseUp)
@@ -42,7 +48,7 @@ function handleMouseDown(cells, render, storage) {
   })
 }
 
-function handleFormSubmit(form, render, storage) {
+function handleFormSubmit(form, render, calendar, Task) {
   const onSubmit = event => {
     event.preventDefault()
 
@@ -63,7 +69,7 @@ function handleFormSubmit(form, render, storage) {
     }
 
     const taskId = form.elements.id.value
-    const oldTask = storage.remove(taskId)
+    const oldTask = calendar.remove(taskId)
     const oldTaskEl = document.getElementById(oldTask.id)
     oldTaskEl.parentNode.removeChild(oldTaskEl)
 
@@ -75,25 +81,31 @@ function handleFormSubmit(form, render, storage) {
       date: new Date(formData.date)
     })
 
-    storage.add(newTask)
+    calendar.add(newTask)
     render.drawTask(newTask)
   }
 
   form.addEventListener('submit', onSubmit)
 }
 
-function handleDragAndDrop(cells, render, storage) {
+function handleDragAndDrop(cells, render, calendar, Task) {
   const onDragOver = evt => {
     evt.preventDefault()
   }
 
   const onDrop = evt => {
-    const targetCell = evt.target
-    const taskEl = document.getElementById(evt.dataTransfer.getData('taskId'))
+    const cell = evt.target
+    const taskId = evt.dataTransfer.getData('taskId')
+    const task = calendar.remove(taskId)
+    const taskEl = document.getElementById(taskId)
 
-    if ( targetCell.className !== 'time-share' ) return
+    const minutes = task.date.getMinutes()
+    const cellDate = new Date(cell.getAttribute('data-date-string'))
+    task.date = cellDate
+    task.date.setMinutes(minutes)
     
-    targetCell.appendChild(taskEl)
+    cell.appendChild(taskEl)
+    calendar.add(task)
   }
 
   cells.forEach(cell => {
@@ -101,14 +113,3 @@ function handleDragAndDrop(cells, render, storage) {
     cell.addEventListener('drop', onDrop)
   })
 }
-
-
-
-
-
-
-
-
-
-
-
