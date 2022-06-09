@@ -12,13 +12,19 @@ export default class WeekRender {
     headerRow.appendChild(elt('th', null, 'Hour'))
     for (let i = 0; i < calendar.WEEKDAYS.length; i++) {
       const column = `${calendar.WEEKDAYS[ i ]} ${calendar.week.start + i}`
+      if ((calendar.week.start + i) === calendar.day) {
+        headerRow.appendChild(elt('th', null, elt('span', {
+          class: 'text-primary'
+        }, column)))
+        continue
+      }
       headerRow.appendChild(elt('th', null, column))
     }
 
     const hoursInADay = 24
     for (let hours = 0; hours < hoursInADay; hours++) {
       const bodyRow = body.appendChild(elt('tr'))
-      bodyRow.appendChild(elt('td', null, hours + 'h'))
+      bodyRow.appendChild(elt('td', null, String(hours)))
       for (let day = calendar.week.start; day <= calendar.week.end; day++) {
         bodyRow.appendChild(elt('td', {
           class: 'time-share',
@@ -34,20 +40,16 @@ export default class WeekRender {
     const parent = targetCell ?? getParentEl(task)
     const { x, y, height } = getBounding(task, parent)
 
-    const status = elt('input', { type: 'checkbox' })
-    status.checked = task.checked
-
     const taskEl = elt('div', {
       class: 'task', id: task.id, draggable: true,
       style: `left: ${x}px; top: ${y}%; height: ${height}px; background: ${task.color}`,
       'data-bs-toggle': 'modal', 'data-bs-target': '#task-settings'
     },
-      elt('div', { class: 'name' }, elt('p', { class: 'h6 text-white' }, task.name)),
-      elt('div', { class: 'status' }, status))
+      elt('div', { class: 'name' }, elt('p', { class: 'h6 text-white' }, task.name)))
 
     parent.appendChild(taskEl)
 
-    taskEl.addEventListener('click', task.onClick)
+    taskEl.addEventListener('click', task.onClick.bind(task))
     taskEl.addEventListener('mousedown', task.stopPropagation)
     taskEl.addEventListener('dragstart', task.onDragStart)
     taskEl.addEventListener('drop', task.stopPropagation)

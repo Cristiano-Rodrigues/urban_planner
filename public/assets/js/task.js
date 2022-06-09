@@ -36,7 +36,26 @@ export default class Task {
 
   stopPropagation(evt) { evt.stopPropagation() }
 
-  onClick(evt) {}
+  onClick(evt) {
+    evt.preventDefault()
+
+    const convert = (durationAmountInMinutes) => {
+      const hours = Math.floor(durationAmountInMinutes / 60)
+      const minutes = durationAmountInMinutes % 60
+      const stringRepr = `${String(hours).padStart(2, 0)}:${String(minutes).padStart(2, 0)}`
+
+      return stringRepr
+    }
+
+    const { elements } = document.getElementById('form')
+    elements.id.value = this.id
+    elements.name.value = this.name
+    elements.duration.value = convert(this.durationInMinutes)
+    elements.time.value = convert(this.date.getHours() * 60 + this.date.getMinutes())
+    elements.repeatAlways.checked = this.checked
+    elements.color.value = this.color
+    elements.description.value = this.description
+  }
 
   onDragStart(evt) {
     evt.dataTransfer.setData("taskId", this.id)
@@ -64,7 +83,7 @@ function getRandomId() {
 
 function getRandomColor() {
   const randomHex = () => {
-    return (Math.floor(Math.random() * 255)).toString(16)
+    return (Math.floor(Math.random() * 255)).toString(16).padStart(2, 0)
   }
   const color = `#${randomHex()}${randomHex()}${randomHex()}`
   return color

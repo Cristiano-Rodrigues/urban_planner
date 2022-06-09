@@ -8,10 +8,18 @@ function start(Render, Calendar, Task) {
   
   render.drawCalendar(calendar)
   calendar.getWeeklyTasks().each(render.drawTask)
+  updateTimeDisplay(calendar)
   addListeners(render, calendar, Task)
 }
 
 start(Render, Calendar, Task)
+
+function updateTimeDisplay(calendar) {
+  const timeDisplay = document.querySelector('.currentMonthAndYear')
+  const displayContent = timeDisplay.textContent
+
+  timeDisplay.textContent = displayContent.replace('MONTH YEAR', `${calendar.month} ${calendar.year}`)
+}
 
 function addListeners(render, calendar, Task) {
   const cells = document.querySelectorAll('td.time-share')
@@ -52,7 +60,7 @@ function handleFormSubmit(form, render, calendar, Task) {
   const onSubmit = event => {
     event.preventDefault()
 
-    const convert = string => {
+    const amount = function (string) {
       const regexp = /^(\d{1,2}):(\d{1,2})$/
       const match = string.match(regexp)
       const [, hours, minutes] = match
@@ -61,28 +69,32 @@ function handleFormSubmit(form, render, calendar, Task) {
       return durationInMinutes
     }
 
-    const getFormData = form => {
-      const formData = new FormData(form)
-      const data = {}
-      for (const [name, value] of formData) data[name] = value
-      return data
+    const hoursAndMinutes = function (string) {
+      const regexp = /^(\d{1,2}):(\d{1,2})$/
+      const match = string.match(regexp)
+      const [, hours, minutes] = match
+
+      return [ hours, minutes ]
     }
 
-    const taskId = form.elements.id.value
-    const oldTask = calendar.remove(taskId)
-    const oldTaskEl = document.getElementById(oldTask.id)
+    const elements = form.elements
+    const taskId = elements.id.value
+    const task = calendar.remove(taskId)
+    const oldTaskEl = document.getElementById(taskId)
+
     oldTaskEl.parentNode.removeChild(oldTaskEl)
 
-    const formData = getFormData(form)
-    
-    const newTask = oldTask
-    Object.assign(newTask, formData, {
-      durationInMinutes: convert(formData.duration),
-      date: new Date(formData.date)
-    })
+    task.name = elements.name.value
+    task.durationInMinutes = amount(elements.duration.value)
+    const [ hours, minutes ] = hoursAndMinutes(elements.time.value)
+    task.date.setHours(hours)
+    task.date.setMinutes(minutes)
+    task.repeatAlways = elements.repeatAlways.checked
+    task.color = elements.color.value
+    task.description = elements.description.value
 
-    calendar.add(newTask)
-    render.drawTask(newTask)
+    render.drawTask(task)
+    calendar.add(task)
   }
 
   form.addEventListener('submit', onSubmit)
