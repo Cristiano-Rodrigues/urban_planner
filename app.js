@@ -3,7 +3,7 @@ import http from 'http'
 
 const app = express()
 const server = http.createServer(app)
-const port = 3000
+const port = 5500
 
 app.use(express.static('public'))
 
