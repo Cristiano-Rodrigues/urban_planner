@@ -11,8 +11,10 @@ export default class WeekRender {
     const headerRow = header.appendChild(elt('tr'))
     headerRow.appendChild(elt('th', null, 'Hour'))
     for (let i = 0; i < calendar.WEEKDAYS.length; i++) {
-      const column = `${calendar.WEEKDAYS[ i ]} ${calendar.week.start + i}`
-      if ((calendar.week.start + i) === calendar.day) {
+      const weekDay = calendar.WEEKDAYS[ i ]
+      const monthDay = calendar.week.start + i
+      const column = `${weekDay} ${monthDay}`
+      if (monthDay === calendar.day) {
         headerRow.appendChild(elt('th', null, elt('span', {
           class: 'text-primary'
         }, column)))
@@ -26,9 +28,10 @@ export default class WeekRender {
       const bodyRow = body.appendChild(elt('tr'))
       bodyRow.appendChild(elt('td', null, String(hours)))
       for (let day = calendar.week.start; day <= calendar.week.end; day++) {
+        const dateString = `${calendar.year}-${calendar.month}-${day} ${hours}:00`
         bodyRow.appendChild(elt('td', {
           class: 'time-share',
-          'data-date-string': `${calendar.year}-${calendar.month}-${day} ${hours}:00`
+          'data-date-string': dateString
         }))
       }
     }

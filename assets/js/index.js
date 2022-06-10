@@ -15,10 +15,11 @@ function start(Render, Calendar, Task) {
 start(Render, Calendar, Task)
 
 function updateTimeDisplay(calendar) {
-  const timeDisplay = document.querySelector('.currentMonthAndYear')
-  const displayContent = timeDisplay.textContent
+  const display = document.querySelector('.currentMonthAndYear')
+  const content = display.textContent
 
-  timeDisplay.textContent = displayContent.replace('MONTH YEAR', `${calendar.month} ${calendar.year}`)
+  const time = `${calendar.month} ${calendar.year}`
+  display.textContent = content.replace('MONTH YEAR', time)
 }
 
 function addListeners(render, calendar, Task) {
@@ -26,8 +27,9 @@ function addListeners(render, calendar, Task) {
   const form = document.getElementById('form')
 
   handleMouseDown(cells, render, calendar, Task)
-  handleFormSubmit(form, render, calendar, Task)
-  handleDragAndDrop(cells, render, calendar, Task)
+  handleFormSubmit(form, render, calendar)
+  handleDragAndDrop(cells, calendar)
+  handleDeleteTask(form, calendar)
 }
 
 function handleMouseDown(cells, render, calendar, Task) {
@@ -56,42 +58,37 @@ function handleMouseDown(cells, render, calendar, Task) {
   })
 }
 
-function handleFormSubmit(form, render, calendar, Task) {
+function handleFormSubmit(form, render, calendar) {
   const onSubmit = event => {
     event.preventDefault()
 
-    const amount = function (string) {
-      const regexp = /^(\d{1,2}):(\d{1,2})$/
-      const match = string.match(regexp)
-      const [, hours, minutes] = match
-      const durationInMinutes = parseInt(hours) * 60 + parseInt(minutes)
-  
-      return durationInMinutes
+    const getTime = (string) => {
+      const match = string.match(/^(\d{1,2}):(\d{1,2})$/)
+
+      return { 
+        hours: parseInt(match[1]), minutes: parseInt(match[2])
+      }
     }
 
-    const hoursAndMinutes = function (string) {
-      const regexp = /^(\d{1,2}):(\d{1,2})$/
-      const match = string.match(regexp)
-      const [, hours, minutes] = match
-
-      return [ hours, minutes ]
-    }
-
-    const elements = form.elements
+    const { elements } = form
     const taskId = elements.id.value
     const task = calendar.remove(taskId)
     const oldTaskEl = document.getElementById(taskId)
-
+    const duration = getTime(elements.duration.value)
+    const startTime = getTime(elements.time.value)
+    
     oldTaskEl.parentNode.removeChild(oldTaskEl)
 
-    task.name = elements.name.value
-    task.durationInMinutes = amount(elements.duration.value)
-    const [ hours, minutes ] = hoursAndMinutes(elements.time.value)
-    task.date.setHours(hours)
-    task.date.setMinutes(minutes)
-    task.repeatAlways = elements.repeatAlways.checked
-    task.color = elements.color.value
-    task.description = elements.description.value
+    task.date.setHours(startTime.hours)
+    task.date.setMinutes(startTime.minutes)
+
+    Object.assign(task, {
+      name: elements.name.value,
+      durationInMinutes: duration.hours * 60 + duration.minutes,
+      repeatAlways: elements.repeatAlways.checked,
+      color: elements.color.value,
+      description: elements.description.value
+    })
 
     render.drawTask(task)
     calendar.add(task)
@@ -100,7 +97,7 @@ function handleFormSubmit(form, render, calendar, Task) {
   form.addEventListener('submit', onSubmit)
 }
 
-function handleDragAndDrop(cells, render, calendar, Task) {
+function handleDragAndDrop(cells, calendar) {
   const onDragOver = evt => {
     evt.preventDefault()
   }
@@ -110,11 +107,11 @@ function handleDragAndDrop(cells, render, calendar, Task) {
     const taskId = evt.dataTransfer.getData('taskId')
     const task = calendar.remove(taskId)
     const taskEl = document.getElementById(taskId)
-
     const minutes = task.date.getMinutes()
-    const cellDate = new Date(cell.getAttribute('data-date-string'))
-    task.date = cellDate
-    task.date.setMinutes(minutes)
+    const date = new Date(cell.getAttribute('data-date-string'))
+
+    date.setMinutes(minutes)
+    task.date = date
     
     cell.appendChild(taskEl)
     calendar.add(task)
@@ -124,4 +121,20 @@ function handleDragAndDrop(cells, render, calendar, Task) {
     cell.addEventListener('dragover', onDragOver)
     cell.addEventListener('drop', onDrop)
   })
+}
+
+function handleDeleteTask(form, calendar) {
+  const deleteButton = form.querySelector('#delete')
+  
+  const onClick = evt => {
+    evt.preventDefault()
+
+    const taskId = form.elements.id.value
+    const taskEl = document.getElementById(taskId)
+    
+    taskEl.parentNode.removeChild(taskEl)
+    calendar.remove(taskId)
+  }
+
+  deleteButton.addEventListener('click', onClick)
 }
